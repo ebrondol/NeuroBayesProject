@@ -1,0 +1,8 @@
+global_prepro_flag   
+        svfit_mass 24
+             jdeta 24
+            pt_tot 25
+    met_centrality 23
+ lep_etacentrality 12
+            pt_sum 23
+              mvis 14

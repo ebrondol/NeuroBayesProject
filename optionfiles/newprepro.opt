@@ -1,0 +1,199 @@
+# 001  This file hands over the variables to the tmva files
+# 002  The first three lines can be used as comment lines
+# 003  comment line
+# 004  The number of variables is:
+12
+# 006  
+# 007  
+# 008  
+# 009  Variable blocks start from here, each counting 10 lines
+# 010  Variable comment line
+1
+svfit_mass
+m_{sv}
+GeV
+F
+# 016  Not used yet
+# 017  Next line individual preproflag, see NeuroBayes HowTo p.28:
+24
+# 019  Final comment line
+# 020  Variable comment line
+0
+dr_leptau
+#DeltaR_{l#tau}
+""
+F
+# 026  Not used yet
+# 027  Next line individual preproflag, see NeuroBayes HowTo p.28:
+23
+# 029  Final comment line
+# 030  Variable comment line
+1
+jdeta
+#Delta#eta_{j1j2}
+""
+F
+# 036  Not used yet
+# 037  Next line individual preproflag, see NeuroBayes HowTo p.28:
+24
+# 039  Final comment line
+# 040  Variable comment line
+0
+mjj
+m_{j1j2}
+GeV
+F
+# 046  Not used yet
+# 047  Next line individual preproflag, see NeuroBayes HowTo p.28:
+12
+# 049  Final comment line
+# 050  Variable comment line
+0
+jeta1eta2
+#eta_{j1} #upoint #eta_{j2}
+""
+F
+# 056  Not used yet
+# 057  Next line individual preproflag, see NeuroBayes HowTo p.28:
+12
+# 059  Final comment line
+# 060  Variable comment line
+1
+pt_tot
+p_{T}^{tot}
+GeV
+F
+# 066  Not used yet
+# 067  Next line individual preproflag, see NeuroBayes HowTo p.28:
+25
+# 069  Final comment line
+# 070  Variable comment line
+1
+met_centrality
+E_{T}^{miss} centrality
+""
+F
+# 076  Not used yet
+# 077  Next line individual preproflag, see NeuroBayes HowTo p.28:
+23
+# 079  Final comment line
+# 080  Variable comment line
+0
+mt_1
+m_{T}
+""
+F
+# 086  Not used yet
+# 087  Next line individual preproflag, see NeuroBayes HowTo p.28:
+12
+# 089  Final comment line
+# 090  Variable comment line
+1
+lep_etacentrality
+lep #eta centrality
+""
+F
+# 096  Not used yet
+# 097  Next line individual preproflag, see NeuroBayes HowTo p.28:
+12
+# 099  Final comment line
+# 100  Variable comment line
+1
+pt_sum
+p_{T}^{sum}
+GeV
+F
+# 106  Not used yet
+# 107  Next line individual preproflag, see NeuroBayes HowTo p.28:
+23
+# 109  Final comment line
+# 110  Variable comment line
+0
+sphericity
+sphericity
+""
+F
+# 116  Not used yet
+# 117  Next line individual preproflag, see NeuroBayes HowTo p.28:
+12
+# 119  Final comment line
+# 120  Variable comment line
+1
+mvis
+m_{vis}
+GeV
+F
+# 126  Not used yet
+# 127  Next line individual preproflag, see NeuroBayes HowTo p.28:
+14
+# 129  Final comment line
+# 130  Variable comment line
+# 131  Insert 0 for switching off variable, else 1
+# 132  Variable name
+# 133  Short name
+# 134  Unit
+# 135  Vartype (mostly F) for TMVA declaration
+# 136  Not used yet
+# 137  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 138  Insert integer with two or three digits
+# 139  Final comment line
+# 140  Variable comment line
+# 141  Insert 0 for switching off variable, else 1
+# 142  Variable name
+# 143  Short name
+# 144  Unit
+# 145  Vartype (mostly F) for TMVA declaration
+# 146  Not used yet
+# 147  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 148  Insert integer with two or three digits
+# 149  Final comment line
+# 150  Variable comment line
+# 151  Insert 0 for switching off variable, else 1
+# 152  Variable name
+# 153  Short name
+# 154  Unit
+# 155  Vartype (mostly F) for TMVA declaration
+# 156  Not used yet
+# 157  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 158  Insert integer with two or three digits
+# 159  Final comment line
+# 160  Variable comment line
+# 161  Insert 0 for switching off variable, else 1
+# 162  Variable name
+# 163  Short name
+# 164  Unit
+# 165  Vartype (mostly F) for TMVA declaration
+# 166  Not used yet
+# 167  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 168  Insert integer with two or three digits
+# 169  Final comment line
+# 170  Variable comment line
+# 171  Insert 0 for switching off variable, else 1
+# 172  Variable name
+# 173  Short name
+# 174  Unit
+# 175  Vartype (mostly F) for TMVA declaration
+# 176  Not used yet
+# 177  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 178  Insert integer with two or three digits
+# 179  Final comment line
+# 180  Variable comment line
+# 181  Insert 0 for switching off variable, else 1
+# 182  Variable name
+# 183  Short name
+# 184  Unit
+# 185  Vartype (mostly F) for TMVA declaration
+# 186  Not used yet
+# 187  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 188  Insert integer with two or three digits
+# 189  Final comment line
+# 190  Variable comment line
+# 191  Insert 0 for switching off variable, else 1
+# 192  Variable name
+# 193  Short name
+# 194  Unit
+# 195  Vartype (mostly F) for TMVA declaration
+# 196  Not used yet
+# 197  Next line individual preproflag, see NeuroBayes HowTo p.28:
+# 198  Insert integer with two or three digits
+# 199  Final comment line

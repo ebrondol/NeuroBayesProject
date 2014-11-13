@@ -1,0 +1,54 @@
+#!/bin/bash This one is just for highlighting
+# Create MVAPdfs
+CreateMVAPdfs true
+
+# Analysis Macro, set False if you don't want to run the NeuroBayes Analysis Macro
+# For use, also NBPreproString has to be set!
+Analysis false
+# Set individual preprocessing strings for each variable
+# syntax "var1=<ij>.<PreProcPar1>.<PreProPar2>...,var2=<ij>...," For options see HowTo p.28ff
+NBPreproString
+
+# Specify how many times the classifiers shall be boosted, default 0
+# This options doesn't work!!
+Boost_num
+
+# Type of global preprocessing
+# Syntax is "kij" or "ij" where each k, i and j are a digit, standard for example 12, see HowTo p.27f
+Preprocessing 22
+
+# Number of Training Iterations, default 100, for seeing only the results of preprocessing choose 0
+NTrainingIter 100
+
+# Variable Transforms performed before each training
+# Syntax is "<Type>_<Class>", where <Type> indicates the sort of transformation, and <Class> can be either Signal, Background or AllClasses (default, if nothing given)
+# For type it can be used D for Decorrelation, P for PCA-transformation, G for Gaussianisation or N for Normalisation
+VarTransform
+
+# If this is set Events with negative weights are ignored in the training (but are included for testing and performance evaluation)
+IgnoreNegWeightsInTraining false
+
+# Choose type of regularisation
+# Possible choices are: OFF , REG (default), ARD , ASR, ALL. See HowTo p.33
+Regularisation OFF
+
+# Type of loss-function: Possible choices are ENTROPY (default), QUADRATIC and COMBINED
+LossFunc ENTROPY
+
+# Shape treatment: Possible choices are OFF, INCL, MARGINAL, DIAG and TOL. See HowTo p.10
+ShapeTreat INCL
+
+# Optionally, a momentum can be specified for the training, see HowTo p.34
+Momentum
+
+# Update weights every number of events specified (default is 200)
+WeightUpdate
+
+# Multiply the learning speed by a number up to 1000. (default is 1.), 
+LearningSpeed
+
+# Limit the learning speed with this option (default is 1.)
+LimitLearningSpeed 1000
+
+# The BFGS-Algorithm (see MaierBenediktDiplArbeit.pdf p.72) can be used by specifying BFGS
+TrainingMethod

@@ -1,0 +1,60 @@
+Result file of run_new_down.sh on 10/24/14, at 13:21:12 
+
+
+Results Preproflags
+global_prepro_flag   
+        svfit_mass 24
+             jdeta 24
+            pt_tot 25
+    met_centrality 23
+ lep_etacentrality 12
+            pt_sum 23
+              mvis 14
+     Variable name    FoM
+Using all 7 variables
+  Figure of Merit:   2.56934
+
+All possible sets of 6 variables
+        svfit_mass   1.92909
+             jdeta   1.89362
+            pt_tot   2.08589
+    met_centrality   2.55576
+ lep_etacentrality   2.38395
+            pt_sum   1.82588
+              mvis    2.2949
+Variable met_centrality eliminated, FoM 2.55576
+
+All possible sets of 5 variables
+        svfit_mass   1.90031
+             jdeta   1.89824
+            pt_tot   2.10331
+ lep_etacentrality   2.31569
+            pt_sum   1.84702
+              mvis   2.34916
+Variable mvis eliminated, FoM 2.34916
+
+All possible sets of 4 variables
+        svfit_mass   1.32848
+             jdeta    1.8268
+            pt_tot   2.07225
+ lep_etacentrality   2.24367
+            pt_sum   1.92135
+Variable lep_etacentrality eliminated, FoM 2.24367
+
+All possible sets of 3 variables
+        svfit_mass   1.22376
+             jdeta   1.76531
+            pt_tot   2.06472
+            pt_sum   1.76034
+Variable pt_tot eliminated, FoM 2.06472
+
+All possible sets of 2 variables
+        svfit_mass   1.07614
+             jdeta   1.58562
+            pt_sum   1.67386
+Variable pt_sum eliminated, FoM 1.67386
+
+All possible sets of 1 variables
+        svfit_mass   0.931818
+             jdeta    1.3176
+Variable jdeta eliminated, FoM 1.3176
