@@ -94,9 +94,9 @@ TString option_string ( TString variablesfile, TString stringfile )
        } else if ( a == "LossFunc" ) {
 	 options +=(":LossFunc=" + b);
        } else if ( a == "LearningSpeed" ) {
-	 options +=(":LearingSpeed=" + b);
+	 options +=(":LearningSpeed=" + b);
        } else if ( a == "LimitLearningSpeed" ) {
-	 options +=(":LimitLearingSpeed=" + b);
+	 options +=(":LimitLearningSpeed=" + b);
        } else if ( a == "TrainingMethod" ) {
 	 options +=(":TrainingMethod=" + b);
        } else {

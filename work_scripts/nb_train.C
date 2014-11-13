@@ -189,10 +189,10 @@ void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfi
    factory->BookMethod( TMVA::Types::kPlugins, nbname, options );
    //==================================================================================================
 
-   std::cout << "Start here" << std::endl;
    // Train MVAs using the set of training events
+   std::cout << "--- TMVA Training: TrainAllMethodsForClassification" << std::endl;
    factory->TrainAllMethodsForClassification();
-   std::cout << "==> TMVA Training is done!" << std::endl;      
+   std::cout << "--- TMVA Training: done!" << std::endl;      
 
    for ( size_t i(0); i<Input.size(); ++i ) Input.at(i)->Close();
    delete factory;

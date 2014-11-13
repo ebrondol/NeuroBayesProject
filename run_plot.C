@@ -9,6 +9,7 @@
 #include "TGraphAsymmErrors.h"
 
 // own headers
+#include <stdio.h>
 #include "headers/load_histos.h"
 //#include "headers/plot_sb.h"
 #include "TAMS/TAMS.h"
@@ -17,6 +18,7 @@ float fom_plot ( string type, string variableoptions );
 
 void run_plot ( string variableoptions="workvar.opt", string optionstring="workstring.opt" )
 {
+
   TMVA::Tools::Instance();
   gSystem->Load("libTMVANeuroBayes.so");
   TMVA::MethodNeuroBayes::RegisterNeuroBayes();
@@ -43,7 +45,9 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   fom_plot( "test", variableoptions);
   
   fclose ( stdout );
+  std::cerr << "Closed output/run_plot.log." << std::endl;
 
+  return;
 }
 
 float fom_plot ( string type, string variableoptions ) {
@@ -74,4 +78,9 @@ float fom_plot ( string type, string variableoptions ) {
   
   histfile->Close();
   return aft;
+}
+
+void cicci()
+{
+std::cout << "WTF" << std::endl;
 }
