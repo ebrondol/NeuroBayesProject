@@ -254,7 +254,7 @@ public:
   };
 
   float calc_simple2(float s, float b, float berr2=0){
-    if ( (b+berr2)<1e-8 ) cout << "XX " << b << " + " << berr2 << endl;
+    if ( (b+berr2)<1e-8 ) std::cout << "XX " << b << " + " << berr2 << std::endl;
     return pow( s/sqrt( b + berr2 ) , 2 );
   }
 

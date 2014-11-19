@@ -18,6 +18,9 @@
 #include "TMVA/MethodCuts.h"
 #endif
 
+// directory of the Inputfiles
+const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/";
+
 void EvaluateTree( TFile* input, TH1F* histogramm, TMVA::Reader* reader, TString nbname, TString optionfile);
 
 namespace VA {
@@ -96,7 +99,6 @@ void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/work
    // load the signal and background event samples from ROOT trees
   std::vector<TString> SignalFiles;
   std::vector<TString> BkgFiles;
-  const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/"; // directory of the Inputfiles
   if ( datatype != "test" && datatype != "train" ) {
     std::cerr << "Datatype should be test or train" << std::endl;
   };

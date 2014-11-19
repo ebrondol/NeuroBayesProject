@@ -1,3 +1,5 @@
+#include <cmath>
+#include <iostream> 
 #include <vector>
 #include <fstream>
 #include <string>
@@ -7,6 +9,8 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TGraphAsymmErrors.h"
+#include "TSystem.h"
+#include "TMVA/Tools.h"
 
 // own headers
 #include <stdio.h>
@@ -14,15 +18,18 @@
 //#include "headers/plot_sb.h"
 #include "TAMS/TAMS.h"
 
+using namespace std;
+
 float fom_plot ( string type, string variableoptions );
 
-void run_plot ( string variableoptions="workvar.opt", string optionstring="workstring.opt" )
+void run_plot ( string variableoptions="workvar.opt", string optionstring="workstring.opt")
 {
 
   TMVA::Tools::Instance();
   gSystem->Load("libTMVANeuroBayes.so");
   TMVA::MethodNeuroBayes::RegisterNeuroBayes();
 
+  gROOT->LoadMacro("work_scripts/plot_variables.C+");
   gROOT->LoadMacro("work_scripts/nb_train.C+");
   gROOT->LoadMacro("work_scripts/nb_test.C+");
   gROOT->LoadMacro("work_scripts/option_string.C+");
@@ -31,12 +38,12 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   optionstring    = ("optionfiles/"+optionstring);
   string options  = option_string( variableoptions, optionstring );
 
+  plot_variables(variableoptions);
   freopen ( "output/run_plot.log", "w", stdout );
   std::cerr << "Redirecting output to output/run_plot.log" << std::endl;
   std::cerr << "Running Training with the following parameters:" << std::endl;
   std::cerr << "\tvariable options: " << variableoptions << std::endl;
   std::cerr << "\toptionstring: " << optionstring << std::endl;
-  std::cerr << "\toptions: " << options << std::endl;
   nb_train( options, "NeuroBayes", variableoptions ); // 
 
   std::cerr << "Running Analysis and making plot for Training data" << std::endl;
@@ -51,6 +58,7 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
 }
 
 float fom_plot ( string type, string variableoptions ) {
+/*
   std::cerr << "Testing..." << std::endl;
   nb_test("NeuroBayes", variableoptions, type);
   float bef, aft;
@@ -78,9 +86,29 @@ float fom_plot ( string type, string variableoptions ) {
   
   histfile->Close();
   return aft;
+*/
 }
 
-void cicci()
+/* TENTATIVO FALLITO DI PRENDERE DA UN cfg FILE ESTERNO */
+//#include "Utilities/ConfigParser.h"
+
+int parseConfigFile (const TString& config)
 {
-std::cout << "WTF" << std::endl;
+  std::cout << ">>> Parsing " << config << " file" << std::endl ;
+  ConfigParser* gConfigParser = new ConfigParser();
+
+  if( gConfigParser ) delete gConfigParser;
+  gConfigParser = new ConfigParser();
+
+  if( !(gConfigParser -> init(config)) )
+  {
+    std::cout << ">>> parseConfigFile::Could not open configuration file "
+              << config << std::endl;
+     return -1;
+  }
+
+  //gConfigParser -> print();
+  
+    return 0 ;
 }
+  

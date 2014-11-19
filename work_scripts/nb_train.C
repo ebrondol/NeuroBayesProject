@@ -22,6 +22,9 @@
 #include "TMVA/Tools.h"
 #endif
 
+// directory of the Inputfiles
+const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/"; 
+
 void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfile = "optionfiles/variables1.opt" )
 {
    // this loads the library
@@ -95,7 +98,6 @@ void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfi
    // load the signal and background event samples from ROOT trees
   std::vector<TString> SignalFiles;
   std::vector<TString> BkgFiles;
-  const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/"; // directory of the Inputfiles
   // specify signal files
   SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_0.root");
   //  SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root"); // Check if same as in nb_test.C
