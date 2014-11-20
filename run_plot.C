@@ -18,9 +18,13 @@
 //#include "headers/plot_sb.h"
 #include "TAMS/TAMS.h"
 
+//#include "Utilities/ConfigFileLine.h"
+//#include "Utilities/ConfigParser.h"
+
 using namespace std;
 
 float fom_plot ( string type, string variableoptions );
+int parseConfigFile (const TString& config);
 
 void run_plot ( string variableoptions="workvar.opt", string optionstring="workstring.opt")
 {
@@ -33,6 +37,10 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   gROOT->LoadMacro("work_scripts/nb_train.C+");
   gROOT->LoadMacro("work_scripts/nb_test.C+");
   gROOT->LoadMacro("work_scripts/option_string.C+");
+//  gROOT->LoadMacro("Utilities/ConfigFileLine.h+");
+//  gROOT->LoadMacro("Utilities/ConfigParser.h+");
+
+//  parseConfigFile("cfg/standardConf.cfg");
 
   variableoptions = ("optionfiles/"+variableoptions);
   optionstring    = ("optionfiles/"+optionstring);
@@ -54,7 +62,8 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   fclose ( stdout );
   std::cerr << "Closed output/run_plot.log." << std::endl;
 
-  return;
+  gROOT->ProcessLine(".q"); 
+//  return;
 }
 
 float fom_plot ( string type, string variableoptions ) {

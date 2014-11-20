@@ -2,26 +2,37 @@
 #include <fstream>
 #include <vector>
 //#include <iostream>
-//#include <map>
+#include <map>
 #include <string>
 
 #include "TFile.h"
 #include "TTree.h"
 #include "TString.h"
 #include "TSystem.h"
-//#include "TROOT.h"
-//#include "TStopwatch.h"
+#include "TChain.h"
+#include "TCanvas.h"
+#include "TLegend.h"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 #include "TMVA/MethodCuts.h"
 #endif
-/*
+
 // directory of the Inputfiles
 const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/";
 
-void EvaluateTree( TFile* input, TH1F* histogramm, TMVA::Reader* reader, TString nbname, TString optionfile);
+//outputFile info
+TFile* outFile;
+std::string extension = "pdf";
+
+//histos maps
+std::map<std::string,TH1F*> h_Sig;
+std::map<std::string,TH1F*> h_Bkg;
+
+void DrawVar(const std::string& category, const int& rebin, const std::string& outFileName);
+
+TH1F* ratioHisto(TH1F* h_num, TH1F* h_den);
 
 namespace VA {
   // for type declarations/linkings in the TMVATesting framework
@@ -29,194 +40,318 @@ namespace VA {
   int nbtag;
   vector<float> varfloat;
 }
-*/
-// Main
-void plot_variables ( )
-{
-/*  //  Library is loaded in another program
-  //  TMVA::Tools::Instance();
 
-  std::cout << "==> Start TMVA Testing" << std::endl;
+void plot_variables ( TString optionfile="optionfiles/workvar.opt", bool plotAllVariables = false )
+{
+
+  std::cout << "==> Plotting Variables" << std::endl;
 
   TH1::SetDefaultSumw2(kTRUE); // All new histograms automatically store the sum of squares of errors
 
-  // --- Create the Reader object ------------------------------------------------
-  TMVA::Reader *reader = new TMVA::Reader( ":V:Color:!Silent:!Error" );    
-
-
-  // Define the input variables that shall be used for the MVA training
-  // Load options file(s)
+  //-----  
+  // Load input variables options file(s)
+  fstream namefile;
+  namefile.open(optionfile, ios::in);
+  if(!namefile.good())
+    std::cout << "FILE OPENING ERROR!!" << endl;
+  
   ifstream varoptions ( optionfile );
   if (!varoptions.is_open()) { 
     std::cerr << "Unable to open option file." << std::endl;
     exit(1);
   };
-  string varon, varname;
-  unsigned int NVAR=0, nline(1);
-  // Get NVAR
-  for (nline; nline<=5; ++nline) getline( varoptions, varon);
-  if ( varon[0]=='#' || varon[0]=='\0' ) {
-    std::cerr << "In nb_test.C: No number of variables specified in line 5." << std::endl;
+
+  //-----
+  //Get Variables Total Number
+
+  vector< pair<int,string> > StatusAndNameVar;
+  string buffer_line;
+  unsigned int NVAR = 0, nline(1);
+
+  //Go to line ##5 for the total number
+  for ( nline; nline<=5; ++nline){
+    getline( varoptions, buffer_line);
+  }
+
+  if ( buffer_line[0]=='#' || buffer_line[0]=='\0' ) {
+    std::cerr << "No number of variables specified in line 5." << std::endl;
     std::cerr << "Check " << optionfile << std::endl;
   } else {
-    NVAR = atoi(varon.c_str());
+    NVAR = atoi(buffer_line.c_str());
+    std::cout << "Plotting of " << NVAR << " variables:" << std::endl;
   }
-  VA::varfloat = vector<float>(NVAR); 
-  // Get Variables
-  for ( int it(1); it<=NVAR; ++it ) {
-    for (nline; nline<=(10*it+1); ++nline) getline( varoptions, varon); // Go to line ##1 for the boolean
-    if ( not ( varon[0]=='0' || varon[0]=='1' ) ) {
-      std::cerr << "In nb_test.C: Line " << 10*it+1 << " is " << varon << " and not a boolean." << std::endl;
-      std::cerr << "Check " << optionfile << std::endl;
-      break;
+
+
+  //-----
+  // Get Variables Value
+  string buffer_lineB, buffer_lineN;
+
+  for (unsigned int it = 1; it <= NVAR; ++it ) {
+
+    //Go to line ##(10*it+1) for the boolean
+    for (nline; nline<=(10*it+1); ++nline) {
+      getline( varoptions, buffer_lineB);
+    }
+
+    //Go to line ##(10*it+2) for the name
+    for (nline; nline<=(10*it+2); ++nline) {
+      getline( varoptions, buffer_lineN); 
+    }
+
+
+    if( plotAllVariables ){
+      StatusAndNameVar.push_back(make_pair(atoi(buffer_lineB.c_str()), buffer_lineN));
+      std::cout << "\tVariable " << StatusAndNameVar.back().second << " is plotted." << std::endl;
     } else {
-      getline( varoptions, varname); ++nline; // Read in line ##2
-      if ( varon[0]=='0' ) {
-	std::cout << "--- TMVA Testing: Variable " << varname << " is not used for testing." << std::endl;
-      } else {
-	reader->AddVariable( varname, &VA::varfloat[it] );
-	std::cout << "--- TMVA Testing: Variable " << it << ": " << varname << std::endl;
+      if(buffer_lineB[0] == '1' ){
+        StatusAndNameVar.push_back(make_pair(atoi(buffer_lineB.c_str()), buffer_lineN));
+        std::cout << "\tVariable " << StatusAndNameVar.back().second << " is plotted." << std::endl;
       }
     }
 
   }
 
-  // Also possible spectator variables have to be specified
+  //-----
+  // Get signal and background event samples
 
-  // --- Book Methods -----------------------------------------------------
-
-  TString nbpath = "weights/TMVAClassification_" + nbname + ".weights.xml";
-   // book Neurobayes
-  reader->BookMVA( nbname +" method", nbpath );
-
-   // Book output histograms --------------------------------------------------
-   TH1F *hist[2];
-   hist[0] = new TH1F( nbname+"_B", nbname+"_B", 500, -1.0, 1.0 ); // Background entries
-   hist[1] = new TH1F( nbname+"_S", nbname+"_S", 500, -1.0, 1.0 ); // Signal entries
-
-  // ---------------------------------------------------------------------------------------
-
-   // load the signal and background event samples from ROOT trees
   std::vector<TString> SignalFiles;
   std::vector<TString> BkgFiles;
-  if ( datatype != "test" && datatype != "train" ) {
-    std::cerr << "Datatype should be test or train" << std::endl;
-  };
-  // specify signal files
-  SignalFiles.push_back(dir+datatype+"_mvain_mu_sync_vbfhiggs_0.root");
-  //SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root"); // check if same as in nb_train.C
-  SignalFiles.push_back(dir+"test_mvain_mu_sync_ggfhiggs_0.root"); // train_sample is empty
-  // background files
-  BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy1j_0.root");
-  BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy2j_0.root");
-  BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy3j_0.root");
-  BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy4j_0.root");
+  //ERICA :: nothing, test o train ?
+  SignalFiles.push_back(dir+"test_mvain_mu_sync_vbfhiggs_0.root");
+  SignalFiles.push_back(dir+"test_mvain_mu_sync_ggfhiggs_0.root");
+  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy1j_0.root");
+  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy2j_0.root");
+  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy3j_0.root");
+  BkgFiles.push_back(dir+"test_mvain_mu_sync_dy4j_0.root");
 
-  // Create Vector of Inputfiles
-  std::vector<TFile*> Input; // Can be erased, and only local variables can be used, but do not forget to Close all Opened TFiles
-  size_t IterInput(0);
-
-  // Fill in Signalfiles
-  for (IterInput; IterInput < SignalFiles.size(); ++IterInput) {
-    TFile* tf1 = TFile::Open( SignalFiles.at(IterInput) ); // at() returns a reference on the element i
-    Input.push_back( tf1 );
-    if ( gSystem->AccessPathName( SignalFiles.at(IterInput) ) ) { // file does not exist in local directory
-      std::cout << "Input File " << Input.at(IterInput)->GetName() << " does not exist." << std::endl;
-      return;
-    }
-    std::cout << "--- TMVA Testing: Using Input File " << Input.at(IterInput)->GetName() << " as signal." << std::endl;
-
-    // Evaluate Event Tree
-    EvaluateTree( Input[IterInput], hist[1], reader, nbname, optionfile);
+  std::cout << "Input files:" << std::endl;
+  TChain* ntu_Sig = new TChain("TauCheck");
+  for(unsigned int i = 0; i < SignalFiles.size(); i++){
+    ntu_Sig -> Add(SignalFiles.at(i));
+    std::cout << "\t" << SignalFiles.at(i) << " added at the Sig chain." << std::endl;
   }
-  --IterInput; // because gets increased one time too often in the last loop
-
-  // Fill in Backgroundfiles
-  for (size_t i(0); i<BkgFiles.size(); ++i) {
-    TFile* tf1 = TFile::Open( BkgFiles.at(i) ); // at() returns a reference on the element i
-    Input.push_back( tf1 );
-    IterInput++;
-    if ( gSystem->AccessPathName( BkgFiles.at(i) ) ) {
-      std::cout << "Input File " << Input.at(IterInput)->GetName() << " does not exist." << std::endl;
-      return;
-    }
-    std::cout << "--- TMVA Testing: Using Input File " << Input.at(IterInput)->GetName() << " as background." << std::endl;
-
-    // Evaluate Event Tree
-    EvaluateTree( Input[IterInput], hist[0], reader, nbname, optionfile);
+  TChain* ntu_Bkg = new TChain("TauCheck");
+  for(unsigned int i = 0; i < BkgFiles.size(); i++){
+    ntu_Bkg -> Add(BkgFiles.at(i));
+    std::cout << "\t" << BkgFiles.at(i) << " added at the Bkg chain." << std::endl;
   }
-  // Output is a filled histogramm
 
-  // Write histogramm in a TFile
-  TString histoname = "histos/hist_"+ nbname +"_"+ datatype +".root";
-  if ( gSystem->AccessPathName("histos") ){ 
-    gSystem->MakeDirectory("histos");
-    std::cout << "Created directory histos/" << std::endl;
-  };
-  TFile* output = new TFile( histoname, "RECREATE" );
-  hist[0]->Write();
-  hist[1]->Write();
-  output->Close();
+  if( ntu_Sig->GetEntries() == 0 || ntu_Bkg->GetEntries() == 0 )
+  {
+    std::cout << "Error!! at least one file is empty" << std::endl;
+    return;
+  }
 
-  for ( size_t i(0); i<Input.size(); ++i ){ Input.at(i)->Close(); };
-  delete reader;
-
-  std::cout << "Testing done... file " << histoname << " written." << std::endl;
-}
-
-
-// === Functions ========================================================================================================
-
-// This function evaluates all variables in the TTree of a file and fill the outcome into a histogramm
-void EvaluateTree( TFile* input, TH1F* histogramm, TMVA::Reader* reader, TString nbname, TString optionfile )
-{
-  // Variables used as storage of TTree-variables
-
-  // Get and prepare the TTree
-  TTree* ttmp = (TTree*)input->Get("TauCheck");
-
-  // Load options file(s)
-  ifstream varoptions ( optionfile );
-  if (!varoptions.is_open()) { 
-    std::cerr << "Unable to open option file." << std::endl;
-    exit(1);
-  };
-  string varon, varname;
-  unsigned int NVAR=0, nline(1);
-  // Get NVAR
-  for (nline; nline<=5; ++nline) getline( varoptions, varon);
-  NVAR = atoi(varon.c_str());
-
+  //-----
   // Get Variables
-  for ( int it(1); it<=NVAR; ++it ) {
-    for (nline; nline<=(10*it+1); ++nline) getline( varoptions, varon); // Go to line ##1 for the boolean
-    if (varon[0]=='1') {
-      getline( varoptions, varname); ++nline;
-      // Set Address
-      ttmp->SetBranchAddress(varname.c_str(), &VA::varfloat[it]);
+
+  VA::varfloat = vector<float>(NVAR); 
+  for(unsigned int it = 0; it < StatusAndNameVar.size(); ++it ) {
+    char * S = new char[StatusAndNameVar.at(it).second.length() + 1];  
+    std::copy(StatusAndNameVar.at(it).second.begin(), StatusAndNameVar.at(it).second.end(), S);
+    S[StatusAndNameVar.at(it).second.size()] = '\0';
+    ntu_Sig->SetBranchAddress(S, &VA::varfloat[it]);
+    ntu_Bkg->SetBranchAddress(S, &VA::varfloat[it]);
+  }
+ 
+  //-----                    
+  //Creation of histos: max and min to be fixed
+  
+  int nEntries_Sig = ntu_Sig -> GetEntriesFast();
+  for(unsigned int it = 0; it < StatusAndNameVar.size(); ++it)
+  {
+    float min = 99999.;
+    float max = 0.0;
+
+    for(int ientry = 0; ientry < nEntries_Sig; ++ientry)
+    {
+      ntu_Sig -> GetEntry(ientry);
+      
+      if( VA::varfloat[it] < min )
+        min = VA::varfloat[it];      
+      if( VA::varfloat[it] > max )
+        max = VA::varfloat[it];      
+
+    }
+    std::string category = StatusAndNameVar.at(it).second;
+
+    std::string histoName = "h_Sig_"+category;
+    h_Sig[category] = new TH1F(histoName.c_str(),"", 100, min, max);
+    h_Sig[category] -> Sumw2();
+
+    histoName = "h_Bkg_"+category;
+    h_Bkg[category] = new TH1F(histoName.c_str(),"", 100, min, max);
+    h_Bkg[category] -> Sumw2();
+ 
+  }
+
+  //----
+  //Filling histos
+
+  for(unsigned int it = 0; it < StatusAndNameVar.size(); ++it)
+  {
+    for(int ientry = 0; ientry < nEntries_Sig; ++ientry)
+    {
+      ntu_Sig -> GetEntry(ientry);
+
+      h_Sig[StatusAndNameVar.at(it).second] -> Fill(VA::varfloat[it]);
+
     }
   }
 
-  ttmp->SetBranchAddress("weight", &VA::weight );
-  ttmp->SetBranchAddress("lumiWeight", &VA::lumiWeight );
-  ttmp->SetBranchAddress("splitFactor", &VA::splitFactor );
-  ttmp->SetBranchAddress("nbtag", &VA::nbtag );
 
-  std::cout << "--- TMVA Testing: Evaluating file: " << input->GetName() << " with " << ttmp->GetEntries() << " events" << std::endl;
+  int nEntries_Bkg = ntu_Bkg -> GetEntriesFast();
+  for(unsigned int it = 0; it < StatusAndNameVar.size(); ++it)
+  {
+    for(int ientry = 0; ientry < nEntries_Bkg; ++ientry)
+    {
+      ntu_Bkg -> GetEntry(ientry);
 
-  for (Long64_t ievt=0; ievt<ttmp->GetEntries(); ievt++) {
+      h_Bkg[StatusAndNameVar.at(it).second] -> Fill(VA::varfloat[it]);
 
-    //       if (ievt%1000 == 0) std::cout << "--- ... Processing event: " << ievt << std::endl;
-    ttmp->GetEntry(ievt);
-
-    //Preselection
-    if (VA::nbtag>0) continue; // If nbtag>0 start from the beginning with next iterator
-
-    // --- Return the MVA outputs and fill into histograms
-    float retval=reader->EvaluateMVA( nbname +" method" );
-    histogramm->Fill(retval,VA::weight*VA::lumiWeight*VA::splitFactor);
+    }
   }
-  //  std::cout << "geht\n";
-*/
+
+
+  //-----                    
+  //Plotting
+  std::string outFileName = "plotVar";
+  outFile = new TFile((outFileName+".root").c_str(),"RECREATE");
+
+  TCanvas* dummy = new TCanvas("dummy","",0,0,700,600);
+  dummy -> Print((outFileName+"."+extension+"[").c_str(),extension.c_str());
+
+  for(unsigned int it = 0; it < StatusAndNameVar.size(); ++it)
+  {
+    DrawVar(StatusAndNameVar.at(it).second, 1, outFileName);
+  }
+
+  outFile -> Close();
+  dummy -> Print((outFileName+"."+extension+"]").c_str(),extension.c_str());
+  dummy -> Close();
+
 }
+
+
+//----------------------------------------------------
+
+void DrawVar(const std::string& category, const int& rebin, const std::string& outFileName){
+
+  //----
+  //Defining TPads for var histo and ratio
+
+  TCanvas* c = new TCanvas(("c_"+category).c_str(),("Htautau - "+category).c_str(),0,0,700,600);
+  c -> cd();
+
+//  TPad* p1 = new TPad("p1","p1",0., 0., 1., 1.);
+//  p1 -> SetLeftMargin(0.16);
+//  p1 -> SetRightMargin(0.13);
+//  p1 -> SetTopMargin(0.08);
+//  p1 -> SetBottomMargin(0.2);
+//  p1 -> Draw();
+//
+//  p1 -> cd();
+  c -> SetGridx();
+
+
+
+  if( h_Sig[category]->Integral() > 0 )
+    h_Sig[category] -> Scale( 1. * h_Bkg[category]->Integral() / h_Sig[category]->Integral() );
+
+  char axisTitle[50];
+  h_Sig[category] -> Rebin(rebin);
+  sprintf(axisTitle,"events",h_Sig[category]->GetBinWidth(1));
+  //h_Sig[category] -> GetXaxis() -> SetRangeUser(min,max);
+  h_Sig[category] -> GetXaxis() -> SetLabelSize(0.04);
+  h_Sig[category] -> GetXaxis() -> SetLabelFont(42);
+  h_Sig[category] -> GetXaxis() -> SetTitleSize(0.04);
+  h_Sig[category] -> GetXaxis() -> SetTitleOffset(1.10);
+  h_Sig[category] -> GetXaxis() -> SetTitle(category.c_str());
+  h_Sig[category] -> GetYaxis() -> SetLabelSize(0.04);
+  h_Sig[category] -> GetYaxis() -> SetLabelFont(42);
+  h_Sig[category] -> GetYaxis() -> SetTitleSize(0.04);
+  h_Sig[category] -> GetYaxis() -> SetTitleOffset(1.60);
+  h_Sig[category] -> GetYaxis() -> SetTitle(axisTitle);
+
+  h_Sig[category] -> SetLineWidth(1);
+  h_Sig[category] -> SetLineColor(kRed);
+  h_Sig[category] -> SetFillColor(kYellow);
+  h_Sig[category] -> SetMarkerColor(kRed);
+  h_Sig[category] -> SetMarkerSize(0);
+  gPad->Update();
+
+  h_Bkg[category] -> Rebin(rebin);
+  h_Bkg[category] -> SetLineWidth(1);
+  h_Bkg[category] -> SetLineColor(kBlack);
+  h_Bkg[category] -> SetMarkerColor(kBlack);
+  h_Bkg[category] -> SetMarkerStyle(20);
+  h_Bkg[category] -> SetMarkerSize(0.7);
+  gPad->Update();
  
+  float maximum = h_Sig[category] -> GetMaximum();
+  if( h_Bkg[category]->GetMaximum() > maximum) maximum = h_Bkg[category]->GetMaximum();
+
+  h_Sig[category] -> SetMinimum(0.);
+  h_Sig[category] -> SetMaximum(1.05*maximum);
+  h_Sig[category] -> Draw("hist");
+  h_Sig[category] -> Draw("P,same");
+  h_Bkg[category] -> Draw("P,sames");
+
+
+  TLegend* legend = new TLegend(0.55, 0.75, 0.80, 0.85);
+  legend -> SetFillColor(kWhite);
+  legend -> SetFillStyle(1001);
+  legend -> SetTextFont(42);
+  legend -> SetTextSize(0.035);
+
+  legend -> AddEntry(h_Sig[category],"VBF + ggH Signal","PL");
+  legend -> AddEntry(h_Bkg[category],"DY Background","PL");
+
+  legend->Draw("same");
+
+  gPad -> Update();
+
+  c -> Print((outFileName+"."+extension).c_str(),extension.c_str());
+  delete c;
+
+  outFile -> cd();
+
+  h_Sig[category] -> Write();
+  h_Bkg[category] -> Write();
+
+
+}
+
+TH1F* ratioHisto(TH1F* h_num, TH1F* h_den)
+{
+  TH1F* h_ratio = (TH1F*)( h_num->Clone() );
+
+  for(int bin = 1; bin <= h_num->GetNbinsX(); ++bin)
+  {
+//    double int_num = h_num -> Integral(1,bin);
+//    double int_den = h_den -> Integral(1,bin);
+    if(h_den->GetBinContent(bin) != 0.0)    
+      h_ratio -> SetBinContent(bin,h_num->GetBinContent(bin)/h_den->GetBinContent(bin));
+    else
+      h_ratio -> SetBinContent(bin,1.0);
+      h_ratio -> SetBinError(bin,0.);
+  }
+
+  double yMin = 0.75;
+  double yMax = 1.25;
+  h_ratio -> GetYaxis() -> SetRangeUser(yMin,yMax);
+  h_ratio -> GetXaxis() -> SetLabelSize(0.13);
+  h_ratio -> GetYaxis() -> SetLabelSize(0.13);
+  h_ratio -> GetXaxis() -> SetLabelFont(42);
+  h_ratio -> GetYaxis() -> SetLabelFont(42);
+  h_ratio -> GetXaxis() -> SetTitleSize(0.17);
+  h_ratio -> GetYaxis() -> SetTitleSize(0.17);
+  h_ratio -> GetYaxis() -> SetTitleFont(42);
+  h_ratio -> GetXaxis() -> SetTitleOffset(1.00);
+  h_ratio -> GetYaxis() -> SetTitleOffset(0.50);
+  h_ratio -> GetYaxis() -> SetNdivisions(204);
+  h_ratio -> GetXaxis() -> SetTitle(h_num->GetXaxis()->GetTitle());
+  h_ratio -> GetYaxis() -> SetTitle("ratio");
+
+  return h_ratio;
+}
