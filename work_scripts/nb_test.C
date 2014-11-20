@@ -72,7 +72,8 @@ void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/work
     } else {
       getline( varoptions, varname); ++nline; // Read in line ##2
       if ( varon[0]=='0' ) {
-	std::cout << "--- TMVA Testing: Variable " << varname << " is not used for testing." << std::endl;
+	reader->AddSpectator( varname, &VA::varfloat[it] );
+	std::cout << "--- TMVA Testing: Spectator variable " << varname << ":: is NOT used for testing." << std::endl;
       } else {
 	reader->AddVariable( varname, &VA::varfloat[it] );
 	std::cout << "--- TMVA Testing: Variable " << it << ": " << varname << std::endl;

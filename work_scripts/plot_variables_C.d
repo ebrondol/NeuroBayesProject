@@ -51,5 +51,19 @@
 ./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TSysEvtHandler.h
 ./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TQObject.h
 ./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TTime.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TChain.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TCanvas.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TPad.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TVirtualPad.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TAttPad.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TVirtualX.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TAttText.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/GuiTypes.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/Buttons.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TAttCanvas.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TCanvasImp.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TLegend.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TPave.h
+./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/TBox.h
 ./work_scripts/plot_variables_C.so: /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/cintdictversion.h /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.09/x86_64-slc5-gcc46-opt/root/include/RVersion.h
 plot_variables_C__ROOTBUILDVERSION= 5.34/09

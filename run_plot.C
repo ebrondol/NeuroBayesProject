@@ -37,6 +37,7 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   gROOT->LoadMacro("work_scripts/nb_train.C+");
   gROOT->LoadMacro("work_scripts/nb_test.C+");
   gROOT->LoadMacro("work_scripts/option_string.C+");
+  gROOT->LoadMacro("headers/load_histos.h+");
 //  gROOT->LoadMacro("Utilities/ConfigFileLine.h+");
 //  gROOT->LoadMacro("Utilities/ConfigParser.h+");
 
@@ -46,7 +47,7 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   optionstring    = ("optionfiles/"+optionstring);
   string options  = option_string( variableoptions, optionstring );
 
-  plot_variables(variableoptions);
+//  plot_variables(variableoptions);
   freopen ( "output/run_plot.log", "w", stdout );
   std::cerr << "Redirecting output to output/run_plot.log" << std::endl;
   std::cerr << "Running Training with the following parameters:" << std::endl;
@@ -67,20 +68,20 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
 }
 
 float fom_plot ( string type, string variableoptions ) {
-/*
+
   std::cerr << "Testing..." << std::endl;
   nb_test("NeuroBayes", variableoptions, type);
   float bef, aft;
 
   string filename("histos/hist_NeuroBayes_"+type+".root");
   TFile* histfile = TFile::Open(filename.c_str());
-  std::vector<TH1F*> histos = load_histos (histfile, "NeuroBayes", true);
+/*  std::vector<TH1F*> histos = load_histos (histfile, "NeuroBayes", true);
 
   float sys = 0.2; // systematic error
   TAMS ta (histos[0], histos[1], sys);
   ta.calc();
   bef = ta.ams_syst_stat();
-  string filename ("output/pdf_befbin_" + type + ".png" );
+  string filename ("output/pdf_befbin_" + type + "2.png" );
   std::cerr << "The Figure of Merit before rebinning is: " << bef << std::endl;
   ta.savePlot( filename );
   std::cerr << "The PDF-plot is saved in " << filename << std::endl;
@@ -88,14 +89,15 @@ float fom_plot ( string type, string variableoptions ) {
   ta.rebin();
   ta.calc();
   aft = ta.ams_syst_stat();
-  filename="output/pdf_aftbin_" + type + ".png";
+  filename="output/pdf_aftbin_" + type + "2.png";
   std::cerr << "The Figure of Merit after rebinning is: " << aft << std::endl;
   ta.savePlot( filename );
   std::cerr << "The PDF-plot is saved in " << filename << std::endl;
   
   histfile->Close();
-  return aft;
 */
+  return aft;
+
 }
 
 /* TENTATIVO FALLITO DI PRENDERE DA UN cfg FILE ESTERNO */

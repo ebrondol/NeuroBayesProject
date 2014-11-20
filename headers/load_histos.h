@@ -18,7 +18,7 @@ std::vector<TH1F*> load_histos (TFile* histfile, std::string nbname="NeuroBayes"
   std::string s(nbname+"_S");
   histos.push_back( (TH1F*)histfile->Get(s.c_str()) );
   histos.push_back( (TH1F*)histfile->Get(b.c_str()) );
-  if (!Silent)  std::cout << "Loaded Histograms " << s << " and " << b << std::endl;
+  if(!Silent) std::cout << "Loaded Histograms " << s << " and " << b << std::endl;
 
   return histos;
 }
