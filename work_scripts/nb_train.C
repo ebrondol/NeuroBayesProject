@@ -27,24 +27,15 @@ const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/";
 
 void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfile = "optionfiles/variables1.opt" )
 {
-   // this loads the library
-  //   TMVA::Tools::Instance();  // Is done in the program, which loads the NeuroBayes-Plugin
+  // this loads the library
+  // TMVA::Tools::Instance();  
 
-   // ---------------------------------------------------------------
+  std::cout << std::endl;
+  std::cout << "==> Start TMVATraining" << std::endl;
 
-   std::cout << std::endl;
-   std::cout << "==> Start TMVATraining" << std::endl;
-
-
-   // Create a new root output file.
-   TString outfileName( "TMVA.root" );
-   TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
-   // Load options file(s)
-   ifstream varoptions ( optionfile );
-   if (!varoptions.is_open()) { 
-     std::cerr << "Unable to open option file " << optionfile << std::endl;
-     exit(1);
-   };
+  // Create a new root output file.
+  TString outfileName( "TMVA.root" );
+  TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
   //-----
   // Create the Factory
@@ -57,6 +48,12 @@ void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfi
   //-----
   // Define the NVAR input variables 
 
+  // Load options file(s)
+  ifstream varoptions ( optionfile );
+  if (!varoptions.is_open()) { 
+    std::cerr << "Unable to open option file " << optionfile << std::endl;
+    exit(1);
+  };
   string varon, varname, varshort, varunit, vartype;
    unsigned int NVAR=0, nline(1);
    // Get NVAR
@@ -106,7 +103,7 @@ void nb_train ( TString options, TString nbname = "NeuroBayes", TString optionfi
   std::vector<TString> BkgFiles;
 
   SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_0.root");
-  //  SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root"); // Check if same as in nb_test.C
+  SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root"); // Check if same as in nb_test.C
 
   BkgFiles.push_back(dir+"train_mvain_mu_sync_dy1j_0.root");
   BkgFiles.push_back(dir+"train_mvain_mu_sync_dy2j_0.root");

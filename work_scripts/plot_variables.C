@@ -24,6 +24,7 @@ const TString dir = "/afs/cern.ch/user/e/ebrondol/nb1/Input/";
 
 //outputFile info
 TFile* outFile;
+std::string outFileName = "output/plotVar";
 std::string extension = "pdf";
 
 //histos maps
@@ -215,7 +216,6 @@ void plot_variables ( TString optionfile="optionfiles/workvar.opt", bool plotAll
 
   //-----                    
   //Plotting
-  std::string outFileName = "plotVar";
   outFile = new TFile((outFileName+".root").c_str(),"RECREATE");
 
   TCanvas* dummy = new TCanvas("dummy","",0,0,700,600);
@@ -273,19 +273,21 @@ void DrawVar(const std::string& category, const int& rebin, const std::string& o
   h_Sig[category] -> GetYaxis() -> SetTitleOffset(1.60);
   h_Sig[category] -> GetYaxis() -> SetTitle(axisTitle);
 
-  h_Sig[category] -> SetLineWidth(1);
-  h_Sig[category] -> SetLineColor(kRed);
-  h_Sig[category] -> SetFillColor(kYellow);
-  h_Sig[category] -> SetMarkerColor(kRed);
+  h_Sig[category] -> SetLineWidth(2);
+  h_Sig[category] -> SetLineColor(4);
+  h_Sig[category] -> SetFillColor(38);
+  h_Sig[category] -> SetMarkerColor(4);
   h_Sig[category] -> SetMarkerSize(0);
   gPad->Update();
 
   h_Bkg[category] -> Rebin(rebin);
-  h_Bkg[category] -> SetLineWidth(1);
-  h_Bkg[category] -> SetLineColor(kBlack);
-  h_Bkg[category] -> SetMarkerColor(kBlack);
+  h_Bkg[category] -> SetLineWidth(2);
+  h_Bkg[category] -> SetLineColor(2);
+  h_Bkg[category] -> SetFillColor(2);
+  h_Bkg[category] -> SetFillStyle(3004);
+  h_Bkg[category] -> SetMarkerColor(2);
   h_Bkg[category] -> SetMarkerStyle(20);
-  h_Bkg[category] -> SetMarkerSize(0.7);
+  h_Bkg[category] -> SetMarkerSize(0);
   gPad->Update();
  
   float maximum = h_Sig[category] -> GetMaximum();
@@ -294,8 +296,7 @@ void DrawVar(const std::string& category, const int& rebin, const std::string& o
   h_Sig[category] -> SetMinimum(0.);
   h_Sig[category] -> SetMaximum(1.05*maximum);
   h_Sig[category] -> Draw("hist");
-  h_Sig[category] -> Draw("P,same");
-  h_Bkg[category] -> Draw("P,sames");
+  h_Bkg[category] -> Draw("hist,sames");
 
 
   TLegend* legend = new TLegend(0.55, 0.75, 0.80, 0.85);

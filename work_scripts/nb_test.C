@@ -33,19 +33,24 @@ namespace VA {
 // Main
 void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/workvar.opt", TString datatype="test" )
 {
-  //  Library is loaded in another program
-  //  TMVA::Tools::Instance();
+  // this loads the library
+  // TMVA::Tools::Instance(); 
 
+  std::cout << std::endl;
   std::cout << "==> Start TMVA Testing" << std::endl;
 
   TH1::SetDefaultSumw2(kTRUE); // All new histograms automatically store the sum of squares of errors
 
-  // --- Create the Reader object ------------------------------------------------
+  //-----
+  // Create the Reader
+
   TMVA::Reader *reader = new TMVA::Reader( ":V:Color:!Silent:!Error" );    
 
 
-  // Define the input variables that shall be used for the MVA training
-  // Load options file(s)
+  //-----
+  // Define the NVAR input variables 
+ 
+ // Load options file(s)
   ifstream varoptions ( optionfile );
   if (!varoptions.is_open()) { 
     std::cerr << "Unable to open option file." << std::endl;
@@ -61,8 +66,11 @@ void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/work
   } else {
     NVAR = atoi(varon.c_str());
   }
+
+  //-----
+  // Get Variables : used in MVA or spectators
+
   VA::varfloat = vector<float>(NVAR); 
-  // Get Variables
   for ( int it(1); it<=NVAR; ++it ) {
     for (nline; nline<=(10*it+1); ++nline) getline( varoptions, varon); // Go to line ##1 for the boolean
     if ( not ( varon[0]=='0' || varon[0]=='1' ) ) {
@@ -73,7 +81,7 @@ void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/work
       getline( varoptions, varname); ++nline; // Read in line ##2
       if ( varon[0]=='0' ) {
 	reader->AddSpectator( varname, &VA::varfloat[it] );
-	std::cout << "--- TMVA Testing: Spectator variable " << varname << ":: is NOT used for testing." << std::endl;
+        std::cout << "--- TMVA Testing: Variable " << varname << " is spectator variable :: NOT used for training." << std::endl;
       } else {
 	reader->AddVariable( varname, &VA::varfloat[it] );
 	std::cout << "--- TMVA Testing: Variable " << it << ": " << varname << std::endl;
@@ -82,36 +90,40 @@ void nb_test ( TString nbname="NeuroBayes", TString optionfile="optionfiles/work
 
   }
 
-  // Also possible spectator variables have to be specified
-
-  // --- Book Methods -----------------------------------------------------
+  //-----
+  // Book NB Method with weights
 
   TString nbpath = "weights/TMVAClassification_" + nbname + ".weights.xml";
-   // book Neurobayes
   reader->BookMVA( nbname +" method", nbpath );
 
-   // Book output histograms --------------------------------------------------
-   TH1F *hist[2];
-   hist[0] = new TH1F( nbname+"_B", nbname+"_B", 500, -1.0, 1.0 ); // Background entries
-   hist[1] = new TH1F( nbname+"_S", nbname+"_S", 500, -1.0, 1.0 ); // Signal entries
+  //----- 
+  // Creation of output histograms for Bkg and Sig
 
-  // ---------------------------------------------------------------------------------------
+  TH1F *hist[2];
+  hist[0] = new TH1F( nbname+"_B", nbname+"_B", 500, -1.0, 1.0 ); // Background entries
+  hist[1] = new TH1F( nbname+"_S", nbname+"_S", 500, -1.0, 1.0 ); // Signal entries
 
-   // load the signal and background event samples from ROOT trees
+
+  //-----
+  //Load the signal and background event samples from ROOT trees
+
   std::vector<TString> SignalFiles;
   std::vector<TString> BkgFiles;
+
   if ( datatype != "test" && datatype != "train" ) {
     std::cerr << "Datatype should be test or train" << std::endl;
   };
-  // specify signal files
+
   SignalFiles.push_back(dir+datatype+"_mvain_mu_sync_vbfhiggs_0.root");
-  //SignalFiles.push_back(dir+"train_mvain_mu_sync_vbfhiggs_norecoil_0.root"); // check if same as in nb_train.C
+  SignalFiles.push_back(dir+datatype+"_mvain_mu_sync_vbfhiggs_norecoil_0.root"); 
   SignalFiles.push_back(dir+"test_mvain_mu_sync_ggfhiggs_0.root"); // train_sample is empty
-  // background files
+
   BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy1j_0.root");
   BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy2j_0.root");
   BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy3j_0.root");
   BkgFiles.push_back(dir+datatype+"_mvain_mu_sync_dy4j_0.root");
+
+
 
   // Create Vector of Inputfiles
   std::vector<TFile*> Input; // Can be erased, and only local variables can be used, but do not forget to Close all Opened TFiles

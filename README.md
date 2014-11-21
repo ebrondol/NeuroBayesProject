@@ -24,10 +24,10 @@ Description of the code:
 
 work_scripts/nb_train.C:
 	1. Create a TMVA::Factory ::
-		this allows the communication of the user with the data sets and the MVA methods (which can be choosen later). 
-		The first argument is the base of the name of all the weightfiles in the directory weight/i.
-		The second argument is the output file for the training results.
-		The third is a list of options.
+	   this allows the communication of the user with the data sets and the MVA methods (which can be choosen later). 
+	   The first argument is the base of the name of all the weightfiles in the directory weight/i.
+	   The second argument is the output file for the training results.
+	   The third is a list of options.
 	2. Adding Variables :: 
 	   A variable can be added to the MVA also like a Spectator, which means that is part of the input data set, 
 	   but is not used in the MVA training, test nor during the evaluation. These are just copied into the TestTree.
@@ -41,6 +41,13 @@ work_scripts/nb_train.C:
 	6. Book MVA Neurobayes method 
 	7. Training for classification
 
+work_scripts/nb_test.C:
+	1. Create a TMVA::Reader ::
+	   After training and evaluation (of different methods - is not ous case), the method is used to classify
+events in data samples with unknown signal and background composition, or to predict values of a regression target.
+	2. Adding Variables :: 
+	   Nb. They are required to be the same (and in the same order) as the names used for training (this requirement is not actually mandatory, but enforced to ensure the consistency between training and application). 
+
 
 =================
 Running code:
@@ -49,4 +56,6 @@ Running code:
 =================
 Booking different method:
 please lookup the various method configuration options in the corresponding cxx files, eg:src/MethoCuts.cxx, etc, or here: http://tmva.sourceforge.net/optionRef.html
-
+Helping:
+The method factory->PrintHelpMessage(nbname) in not implemented for "Naurobayes".
+ <WARNING> Factory   : <PrintHelpMessage> Could not find classifier "NeuroBayes" in list

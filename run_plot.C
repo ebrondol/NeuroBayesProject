@@ -47,8 +47,8 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   optionstring    = ("optionfiles/"+optionstring);
   string options  = option_string( variableoptions, optionstring );
 
-//  plot_variables(variableoptions);
   freopen ( "output/run_plot.log", "w", stdout );
+  //plot_variables(variableoptions, true);
   std::cerr << "Redirecting output to output/run_plot.log" << std::endl;
   std::cerr << "Running Training with the following parameters:" << std::endl;
   std::cerr << "\tvariable options: " << variableoptions << std::endl;
@@ -64,7 +64,7 @@ void run_plot ( string variableoptions="workvar.opt", string optionstring="works
   std::cerr << "Closed output/run_plot.log." << std::endl;
 
   gROOT->ProcessLine(".q"); 
-//  return;
+
 }
 
 float fom_plot ( string type, string variableoptions ) {
